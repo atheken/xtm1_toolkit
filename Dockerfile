@@ -1,7 +1,8 @@
-FROM --platform=arm64 python:3.11
+FROM python:3.11-alpine
 RUN mkdir /app
 COPY ./src /app
 WORKDIR /app
+RUN apk add bash
 RUN pip install -r ./requirements.txt
 EXPOSE 2323
 ENV XTM1_RELAY_ADDRESS=0.0.0.0:2323

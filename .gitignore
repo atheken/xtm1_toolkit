@@ -1,3 +1,4 @@
 camera.jpg
 output-*.gcode
 __pycache__
+.idea/

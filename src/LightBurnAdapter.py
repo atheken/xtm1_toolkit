@@ -29,34 +29,24 @@ def positive_integer(s: str) -> int:
     if i < 0: raise ValueError()
     return i
 
-input_args = parser.add_mutually_exclusive_group(required=True)
-input_args.add_argument('--watch', '-w', nargs=1, metavar='DIR',
-    help='Watch directory DIR for new G-code files to upload to laser cutter.')
-streaming_args = input_args.add_mutually_exclusive_group(required=False)
-streaming_args.add_argument('--tcp', '-t', metavar='PORT', nargs='?', default=os.environ.get('XTM1_RELAY_ADDRESS'),
-    help='Listen for grbl-TCP connection from LightBurn on port PORT (default = 127.0.0.1:2323). PORT==0 will use tcp_bridge.')
-streaming_args.add_argument('--serial', '-s', nargs=1, metavar='PORT',
-    help='Open the serial port PORT. Most likely this should be one port of a virtual serial port pair like com0com or tty0tty.')
+parser.add_argument('--tcp', '-t', nargs='?', default=os.environ.get('XTM1_RELAY_ADDRESS') or '127.0.0.1:2323',
+    help='Listen for grbl-TCP connection from LightBurn on network interface (default = 127.0.0.1:2323).',
+    required=False)
 
-#target_device_args = parser.add_mutually_exclusive_group()
-input_args.add_argument('--ip', default=os.environ.get('XTM1_IP'),
-    help='IP address of the laser cutter device.')
-# target_device_args.add_argument('--usb', action='store_const', dest='ip', const='201.234.3.1',
-#     help='Connect to laser cutter via USB (which is a network interface with IP 201.234.3.1).')
+parser.add_argument('--ip', default=os.environ.get('XTM1_IP') or '201.234.3.1',
+    help='IP address of the laser cutter device. (if not set, defaults to the USB IP.)', required=False)
 
 ARGS = parser.parse_args()
 
-
 stream = None
-if ARGS.tcp == 0: # --tcp==0 means 'use tcp_bridge'
-    tcp_process = subp.Popen('tcp_bridge/tcp_bridge', stdin=subp.PIPE, stdout=subp.PIPE)
-    stream = StreamLineReader(tcp_process)
-elif ARGS.tcp: # --tcp was given
-    port = int(ARGS.tcp.split(':')[1])
+if ARGS.tcp: # --tcp was given
+    #port = int(ARGS.tcp.split(':')[1])
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    sock.bind(ARGS.tcp.split(':')[0], port)
-    print(f'Waiting for TCP connection on port {port}...')
+    bind_addr = ARGS.tcp.split(':')[0]
+    bind_port = int(ARGS.tcp.split(':')[1])
+    sock.bind((bind_addr, bind_port))
+    print(f'Waiting for TCP connection on port {ARGS.tcp}...')
     sock.listen(1)
     client_connection, _client_ddr = sock.accept()
     stream = StreamLineReader(client_connection)
