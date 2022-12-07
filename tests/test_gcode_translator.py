@@ -5,7 +5,7 @@ import pytest
 import os
 import sys
 current_dir = os.path.abspath(os.path.dirname(__file__))
-sys.path.insert(0, os.path.join(current_dir, '..'))
+sys.path.insert(0, os.path.join(current_dir, '..', 'src'))
 
 from xtm1 import GcodeTranslator, UnexpectedGcodeError
 

@@ -1,0 +1,7 @@
+#numpy==1.23.5
+#scipy==1.9.3
+#tkinter
+
+pyserial==3.5
+sympy==1.11.1
+requests

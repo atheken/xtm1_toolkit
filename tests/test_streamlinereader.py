@@ -11,7 +11,7 @@ except ImportError:
 
 
 current_dir = os.path.abspath(os.path.dirname(__file__))
-sys.path.insert(0, os.path.join(current_dir, '..'))
+sys.path.insert(0, os.path.join(current_dir, '..', 'src'))
 from StreamLineReader import StreamLineReader
 
 def send(endpoint, data: bytes):

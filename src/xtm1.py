@@ -5,9 +5,10 @@ import zipfile
 import json
 import time
 import re
+import os
 
 class XTM1:
-    def __init__(self, IP='201.234.3.1') -> None:
+    def __init__(self, IP= os.environ.get('XTM1_IP')) -> None:
         self.IP = IP
         self.PORT = 8080
         self.CAMERA_PORT = 8329

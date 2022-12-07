@@ -2,6 +2,7 @@
 
 import sys
 import traceback
+from os import environ
 
 from xtm1 import XTM1, GcodeTranslator
 from gcode import GcodeFramer
@@ -10,8 +11,9 @@ from PIL import Image
 
 translator = GcodeTranslator()
 
-#m1 = XTM1()
-m1 = XTM1('192.168.178.125')
+#Use XTM1_IP environment variable to set the address of the device:
+m1 = XTM1()
+
 actions = {
     '--status': lambda: m1.get_status(),
     '--stop': lambda: m1.stop(),
